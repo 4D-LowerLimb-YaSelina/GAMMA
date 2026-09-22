@@ -1,0 +1,12 @@
+defaults:
+  - uncertainty_aware
+  - _self_
+
+_target_: articulate.shape_refiner.prefetched_uncertainty_aware_mhr_refiner.PrefetchedUncertaintyAwareMHRShapeRefiner
+
+surface_sampling_workers: 16
+surface_prefetch_depth: 32
+surface_target_seed: 0
+surface_source_seed: 1
+surface_pin_memory: true
+source_randperm_on_device: true

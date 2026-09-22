@@ -1,0 +1,21 @@
+_target_: match.data.becos.BeCoSArticulatedShapeCorrDataset
+
+dataset_name: faust_becos
+data_root: data/shape-becos/faust_partial_full
+articulated_shape_dir: ${out_dir}
+mode: partial_full
+phase: test
+articulated_subdir: mhr
+articulated_extension: .obj
+return_faces: true
+return_L: false
+return_mass: true
+num_evecs: 200
+return_evecs: true
+return_grad: false
+return_corr: true
+return_dist: true
+return_articulation_confidence: true
+articulation_confidence_suffix: .confidence.npz
+compute_cache: true
+normalize_dist_by_area: true

@@ -1,0 +1,27 @@
+_target_: articulate.shape_refiner.mhr_refiner.MHRShapeRefiner
+
+device: ${device}
+
+# triangulation settings
+sigma_px: 5.0
+conf_thresh: 1e-2
+triangulation_iters: 2
+trim_threshold: 0.1
+
+# pose optim settings
+optimize_keypoints: true
+lr_keypoints: 1e-3
+n_iters_keypoints: 1000
+
+# surf optim settings
+optimize_surface: true
+n_views_surface: 3
+trim_mesh: true
+merge_method: mean
+lr_surface: 1e-2
+n_iters_surface: 1000
+bone_term_weight: 1.0
+keypoint_term_weight: 0.1
+src_to_tgt: true
+src_subsample_num: 5000
+tgt_subsample_num: 5000

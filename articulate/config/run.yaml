@@ -1,0 +1,18 @@
+defaults:
+  - shape_loader: default
+  - view_sampler: default
+  - shape_estimator: sam3d_body
+  - shape_prior: mhr
+  - shape_refiner: default
+  - output_handler: default
+  - _self_
+
+shape_dir: ???
+out_dir: output
+device: cuda
+
+# setup hydra log folder to be the same as the output folder
+hydra:
+  run:
+    dir: ${out_dir}
+

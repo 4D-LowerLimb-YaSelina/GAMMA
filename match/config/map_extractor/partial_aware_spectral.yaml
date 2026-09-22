@@ -1,0 +1,13 @@
+defaults:
+  - partial_aware
+  - _self_
+
+_target_: match.map_extractor.spectral_refined_partial_aware_map_extractor.SpectrallyRefinedPartialAwareMapExtractor
+
+refinement_method: none
+spectral_icp_n_iters: 1
+spectral_icp_chunk_size: 2048
+zoomout_k_init: 100
+zoomout_k_max: 200
+zoomout_step: 5
+zoomout_chunk_size: 2048

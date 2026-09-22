@@ -1,0 +1,21 @@
+defaults:
+  - data: smal_r
+  - map_extractor: partial_aware_smal_spectral
+  - metrics: [geodist]
+  - _self_
+
+out_dir: output/smal_r
+device: cuda
+batch_start: null
+batch_end: null
+
+data:
+  return_L: false
+  return_mass: true
+  return_evecs: true
+  return_grad: false
+  return_articulation_confidence: true
+
+hydra:
+  run:
+    dir: ${out_dir}/bench

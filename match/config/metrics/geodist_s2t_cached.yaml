@@ -1,0 +1,6 @@
+geodist:
+  _target_: match.metric.cached_s2t_geodist.CachedS2TGeodistMetric
+
+  out_dir: ${out_dir}
+  export_path: null
+  cache_template_dist_on_device: true

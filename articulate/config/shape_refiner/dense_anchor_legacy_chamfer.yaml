@@ -1,0 +1,11 @@
+defaults:
+  - dense_anchor
+  - _self_
+
+_target_: articulate.shape_refiner.dense_anchor_legacy_chamfer_mhr_refiner.DenseAnchorLegacyChamferMHRShapeRefiner
+
+# Match the legacy uncertainty-aware MHR surface objective while retaining the
+# dense-anchor initialization and deterministic validation/early stopping.
+n_views_surface: 0
+bone_term_weight: 1.0
+keypoint_term_weight: 0.1

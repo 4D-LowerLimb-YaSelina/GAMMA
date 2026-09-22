@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="GAMMA grounds pretrained articulation priors in scan geometry for zero-shot, scalable dense shape matching in the wild.">
+    <meta name="keywords" content="GAMMA, shape matching, dense correspondence, zero-shot, geometry-grounded articulation, partial scans, test-time adaptation">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GAMMA: Geometry-Grounded Articulation and Test-Time Adaptation for Zero-Shot, Scalable Shape Matching in the Wild">
+    <meta name="twitter:description" content="Geometry-grounded articulation and reusable correspondence for uncurated 3D scans.">
+    <meta name="twitter:image" content="https://liu-qilong.github.io/GAMMA/assets/teaser.png">
+    <meta property="og:title" content="GAMMA: Geometry-Grounded Articulation and Test-Time Adaptation for Zero-Shot, Scalable Shape Matching in the Wild">
+    <meta property="og:description" content="Zero-shot shape matching with category-specific priors, geometry grounding, and cached per-shape articulation.">
+    <meta property="og:image" content="https://liu-qilong.github.io/GAMMA/assets/teaser.png">
+    <meta property="og:url" content="https://liu-qilong.github.io/GAMMA/">
+    <title>GAMMA | Geometry-Grounded Articulation and Test-Time Adaptation for Zero-Shot, Scalable Shape Matching in the Wild</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap hero-inner">
+        <div>
+          <p class="eyebrow">GAMMA · Zero-Shot Shape Matching</p>
+          <h1>Geometry-Grounded Articulation and Test-Time Adaptation for Zero-Shot, Scalable Shape Matching in the Wild</h1>
+          <p class="authors">
+            <strong>Qilong Liu</strong><sup>1,*</sup>,
+            <strong>Qinfeng Xiao</strong><sup>1,*</sup>,
+            <strong>Chenyuan Yi</strong><sup>1</sup>,
+            <strong>Yongsheng Lin</strong><sup>1</sup>,
+            <strong>Liying Zhang</strong><sup>1</sup>,
+            <strong>Kit-lun Yick</strong><sup>1,2,†</sup>
+          </p>
+          <p class="affiliations"><sup>1</sup>Hong Kong Polytechnic University, HK SAR<br><sup>2</sup>Artificial Intelligence in Design, HK SAR</p>
+          <p class="author-notes"><sup>*</sup>Equal contribution. <sup>†</sup>Corresponding author.</p>
+          <div class="actions" aria-label="Project links">
+            <a class="button" href="https://arxiv.org/abs/2606.29167" target="_blank" rel="noopener">Paper</a>
+            <a class="button" href="https://github.com/liu-qilong/GAMMA" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+        <figure class="hero-figure">
+          <a href="assets/teaser.png"><img src="assets/teaser.png" alt="GAMMA transfers textures across raw FAUST resolutions, grounds a shared template in each scan, and reuses it for dense correspondence." width="2400" height="756"></a>
+          <figcaption>Zero-shot dense correspondence from 5k vertices to original 160k–200k-vertex FAUST scans. Articulation is performed once per shape and reused across pair queries; the primary matcher requires no input LBO eigenbasis.</figcaption>
+        </figure>
+      </div>
+    </header>
+    <main>
+      <section><div class="wrap"><h2>Abstract</h2><p class="abstract">Dense correspondence on in-the-wild 3D scans must handle severe non-isometric deformation, partial observations, topology artifacts, irregular discretization, and extreme resolution. Together, these conditions make shape matching both a robustness and scalability problem. Existing methods typically handle only part of this regime and often require expensive spectral or dense feature processing, repeated pairwise optimization, or dataset-specific training. To address the above issues, we present GAMMA, a zero-shot framework based on Geometry-Grounded Articulation. For each scan, GAMMA renders multiple views and uses a pretrained estimator with a category-specific parametric model to produce one template estimate per view. Because these estimates share a fixed vertex ordering, confidence-weighted consensus fuses them into one canonical template and establishes sparse matches across scans. We refine these matches on the input geometry to recover accurate dense correspondences. All core matching steps run at inference time and require neither target-dataset correspondence training nor costly Laplace–Beltrami operator (LBO) computation on the input scans. Each fused template is cached, so additional pair queries reuse the canonicalization. GAMMA obtains average geodesic errors of 2.9 on TOPKIDS and 2.4 on remeshed SMAL, reducing error relative to URSSM by 67% and 60%, respectively. Complementary evaluations report lower aggregate errors than the evaluated baselines on BeCoS-processed partial subsets and demonstrate stable matching accuracy from decimated FAUST meshes to raw scans with 160k–200k vertices. These results demonstrate accurate correspondence across complementary settings and collection-level scalability after per-shape caching.</p></div></section>
+      <section class="alt"><div class="wrap"><h2>Highlights</h2><div class="grid">
+        <div class="point"><h3>Geometry-grounded, zero-shot</h3><p>Frozen category-specific estimators provide articulation priors. Test-time optimization fits each scan without target-benchmark correspondence training.</p></div>
+        <div class="point"><h3>Robust correspondence</h3><p>Confidence-weighted template consensus and sparse soft composition handle non-isometric deformation, partial observations, and irregular scans.</p></div>
+        <div class="point"><h3>Reusable per-shape processing</h3><p>Cached articulations serve additional pair queries. The primary matcher needs no input Laplace–Beltrami eigenbasis; spectral refinement is optional.</p></div>
+      </div></div></section>
+      <section><div class="wrap figure-stack">
+        <div><h2>Method Overview</h2><figure class="result"><a href="assets/framework.png"><img src="assets/framework.png" alt="GAMMA pipeline: multi-view prediction, geometry grounding, confidence-weighted fusion, and sparse map composition." loading="lazy" width="2400" height="998"></a><figcaption>GAMMA uses SAM 3D Body for humans and PRIMA for four-legged animals. Multi-view predictions are aligned and refined against scan geometry, then fused in shared template indexing. Sparse evidence-weighted assignments compose into dense correspondences.</figcaption></figure></div>
+        <div><h2>Qualitative Results</h2>
+          <div class="figure-stack">
+          <figure class="result"><a href="assets/qualitative_curated.png"><img src="assets/qualitative_curated.png" alt="Texture transfers on TOPKIDS, SMAL, FAUST, and SCAPE." loading="lazy" width="2400" height="895"></a><figcaption>Selected texture transfers on TOPKIDS, SMAL, FAUST, and SCAPE, showing coherent GAMMA transfers and representative baseline failures.</figcaption></figure>
+          <figure class="result"><a href="assets/qualitative_raw.png"><img src="assets/qualitative_raw.png" alt="Texture transfers on FAUST at 5k, 20k, 40k, and raw resolution." loading="lazy" width="2400" height="1322"></a><figcaption>Texture transfer on original FAUST scans at 5k, 20k, 40k, and the original 160k–200k vertices.</figcaption></figure>
+          <figure class="result"><a href="assets/qualitative_partial.png"><img src="assets/qualitative_partial.png" alt="Selected texture transfers on ray-cropped partial scans." loading="lazy" width="2400" height="751"></a><figcaption>Selected texture-transfer examples on ray-cropped partial scans.</figcaption></figure>
+          </div>
+        </div>
+      </div></section>
+      <section class="alt"><div class="wrap benchmark-stack">
+        <div class="section-heading"><h2>Benchmark Comparisons</h2><p>Lower error is better. Bold and underlined entries mark the best and second-best results, including ties. Curated and partial benchmarks report target-domain mean geodesic error ×100; raw scans use a separate template-domain metric and are comparable only within that table.</p></div>
+        <div class="table-block"><h3>Non-Isometric Shape Matching</h3><p class="table-note">SMAL contains animal shapes; TOPKIDS contains human shapes with strong non-isometric variation. “No Corr. Tr.” means no target-benchmark correspondence training. Baselines follow UniMatch’s common protocol, except Synchronous Diffusion.</p>
+        <div class="table-wrap"><table class="benchmark-table"><thead><tr><th scope="col">Method</th><th scope="col">Unsup.</th><th scope="col">No Corr. Tr.</th><th scope="col">Zero-Shot</th><th scope="col">SMAL</th><th scope="col">TOPKIDS</th></tr></thead><tbody>
+<tr class="group"><td colspan="6">Axiomatic Methods</td></tr>
+<tr><td>ZoomOut</td><td>✓</td><td>✓</td><td>✓</td><td>38.4</td><td>33.7</td></tr>
+<tr><td>Smooth Shells</td><td>✓</td><td>✓</td><td>✓</td><td>36.1</td><td>11.8</td></tr>
+<tr><td>DiscreteOp</td><td>✓</td><td>✓</td><td>✓</td><td>38.1</td><td>35.5</td></tr>
+<tr class="group"><td colspan="6">Functional Map Methods</td></tr>
+<tr><td>UnsupFMNet</td><td>✓</td><td>✗</td><td>✗</td><td>-</td><td>38.5</td></tr>
+<tr><td>SURFMNet</td><td>✓</td><td>✗</td><td>✗</td><td>-</td><td>48.6</td></tr>
+<tr><td>AttentiveFMaps</td><td>✗</td><td>✗</td><td>✗</td><td>5.4</td><td>23.4</td></tr>
+<tr><td>URSSM</td><td>✓</td><td>✗</td><td>✗</td><td>6.0</td><td>8.9</td></tr>
+<tr><td>Synchronous Diff.</td><td>✓</td><td>✗</td><td>✗</td><td><span class="second">3.6</span></td><td>5.4</td></tr>
+<tr class="group"><td colspan="6">Semantic Methods</td></tr>
+<tr><td>Diff3F</td><td>✓</td><td>✓</td><td>✓</td><td>28.4</td><td>31.0</td></tr>
+<tr><td>DenseMatcher</td><td>✗</td><td>✗</td><td>✗</td><td>4.7</td><td>6.2</td></tr>
+<tr class="group"><td colspan="6">Template-based Methods</td></tr>
+<tr class="ours"><td>GAMMA (ours)</td><td>✓</td><td>✓</td><td>✓</td><td><strong>2.4</strong></td><td><span class="second">2.9</span></td></tr>
+<tr class="ours"><td>GAMMA (+Spec.-ICP)</td><td>✓</td><td>✓</td><td>✓</td><td>3.7</td><td><strong>2.3</strong></td></tr>
+<tr class="ours"><td>GAMMA (+ZoomOut)</td><td>✓</td><td>✓</td><td>✓</td><td>6.0</td><td>3.3</td></tr></tbody></table></div></div>
+        <div class="table-block"><h3>Near-Isometric Shape Matching</h3><p class="table-note">Remeshed human benchmarks. The main GAMMA row uses no input LBO eigenbasis; +Spec.-ICP and +ZoomOut are optional spectral refinements. Baselines follow UniMatch’s common protocol, except Synchronous Diffusion.</p>
+        <div class="table-wrap"><table class="benchmark-table"><thead><tr><th scope="col">Method</th><th scope="col">FAUST</th><th scope="col">SCAPE</th><th scope="col">SHREC19</th></tr></thead><tbody>
+<tr class="group"><td colspan="4">Axiomatic Methods</td></tr>
+<tr><td>BCICP</td><td>6.4</td><td>11.0</td><td>8.0</td></tr>
+<tr><td>ZoomOut</td><td>6.1</td><td>7.5</td><td>7.8</td></tr>
+<tr><td>Smooth Shells</td><td>2.5</td><td>4.7</td><td>7.6</td></tr>
+<tr class="group"><td colspan="4">Functional Map Methods</td></tr>
+<tr><td>UnsupFMNet</td><td>4.8</td><td>9.6</td><td>11.1</td></tr>
+<tr><td>SURFMNet</td><td>2.5</td><td>6.0</td><td>4.8</td></tr>
+<tr><td>URSSM</td><td>1.6</td><td>1.9</td><td>5.7</td></tr>
+<tr><td>Synchronous Diff.</td><td><span class="second">1.5</span></td><td><span class="second">1.8</span></td><td>3.4</td></tr>
+<tr class="group"><td colspan="4">Semantic Methods</td></tr>
+<tr><td>Diff3F</td><td>20.7</td><td>22.1</td><td>26.3</td></tr>
+<tr><td>DenseMatcher</td><td>1.6</td><td>2.0</td><td><span class="second">3.1</span></td></tr>
+<tr><td>UniMatch</td><td>1.6</td><td>1.9</td><td>3.2</td></tr>
+<tr class="group"><td colspan="4">Template-based Methods</td></tr>
+<tr><td>3D-CODED</td><td>2.5</td><td>9.8</td><td>7.7</td></tr>
+<tr class="ours"><td>GAMMA (ours)</td><td><span class="second">1.5</span></td><td><span class="second">1.8</span></td><td><strong>3.0</strong></td></tr>
+<tr class="ours"><td>GAMMA (+Spec.-ICP)</td><td><strong>1.3</strong></td><td><strong>1.7</strong></td><td><span class="second">3.1</span></td></tr>
+<tr class="ours"><td>GAMMA (+ZoomOut)</td><td><span class="second">1.5</span></td><td>1.9</td><td>3.2</td></tr></tbody></table></div></div>
+        <div class="table-block"><h3>High-Resolution Raw Scans</h3><p class="table-note">Template-domain mean geodesic error ×100 over the same 400 directed pair queries from 20 test scans at every resolution. Raw scans have 160k–200k vertices. ZoomOut uses chunked nearest search; URSSM’s OOM denotes an out-of-memory failure of the evaluated implementation.</p>
+        <div class="table-wrap"><table class="benchmark-table"><thead><tr><th scope="col">Method</th><th scope="col">5k</th><th scope="col">10k</th><th scope="col">20k</th><th scope="col">40k</th><th scope="col">80k</th><th scope="col">120k</th><th scope="col">Raw</th></tr></thead><tbody>
+<tr><td>ZoomOut (ch.)</td><td>20.92</td><td>20.54</td><td>20.24</td><td><span class="second">20.57</span></td><td><span class="second">20.31</span></td><td><span class="second">20.21</span></td><td><span class="second">19.89</span></td></tr>
+<tr><td>URSSM (xyz)</td><td>14.30</td><td><span class="second">13.70</span></td><td><span class="second">11.60</span></td><td>OOM</td><td>OOM</td><td>OOM</td><td>OOM</td></tr>
+<tr><td>URSSM (wks)</td><td><span class="second">10.30</span></td><td>20.80</td><td>15.90</td><td>OOM</td><td>OOM</td><td>OOM</td><td>OOM</td></tr>
+<tr class="ours"><td>GAMMA (ours)</td><td><strong>2.42</strong></td><td><strong>2.25</strong></td><td><strong>2.18</strong></td><td><strong>2.16</strong></td><td><strong>2.16</strong></td><td><strong>2.13</strong></td><td><strong>2.11</strong></td></tr></tbody></table></div></div>
+        <div class="table-block"><h3>Partial Shape Matching</h3><p class="table-note">BeCoS-processed FAUST and KIDS subsets. P-F: partial-to-full; P-P: partial-to-partial. URSSM is trained for 30 epochs on each corresponding training split. These results report correspondence error; the fraction of queries receiving a match is not reported.</p>
+        <div class="table-wrap"><table class="benchmark-table"><thead><tr><th scope="col">Method</th><th scope="col">FAUST P-F</th><th scope="col">FAUST P-P</th><th scope="col">KIDS P-F</th><th scope="col">KIDS P-P</th></tr></thead><tbody>
+<tr><td>ZoomOut</td><td>42.2</td><td>68.7</td><td><span class="second">30.0</span></td><td><span class="second">40.1</span></td></tr>
+<tr><td>URSSM(xyz)</td><td><span class="second">22.4</span></td><td><span class="second">20.6</span></td><td>40.2</td><td>41.4</td></tr>
+<tr><td>URSSM(wks)</td><td>31.9</td><td>27.3</td><td>42.7</td><td>47.6</td></tr>
+<tr class="ours"><td>GAMMA (ours)</td><td><strong>2.7</strong></td><td><strong>3.3</strong></td><td><strong>6.7</strong></td><td><strong>5.4</strong></td></tr></tbody></table></div></div>
+      </div></section>
+      <section><div class="wrap runtime-layout"><div><h2>Scalability Through Caching</h2><p>Across the raw-FAUST resolution sweep, articulation takes about <strong>64.9–69.1 seconds per shape</strong>. Cached map composition takes <strong>0.024–3.33 seconds per directed pair</strong>.</p><p>At raw resolution, processing 20 shapes and all 400 directed queries takes approximately <strong>45.3 minutes</strong>, compared with <strong>666 minutes</strong> for chunked ZoomOut. A single uncached pair takes about 141.5 seconds for GAMMA versus 99.9 seconds for chunked ZoomOut: the measured advantage comes from reusing articulations across a collection.</p></div>
+      <figure class="result"><a href="assets/runtime.png"><img src="assets/runtime.png" alt="Runtime by vertex count, separating articulation per shape from GAMMA composition and chunked ZoomOut per directed pair." loading="lazy" width="2400" height="1793"></a><figcaption>Articulation is measured per shape; composition and chunked ZoomOut are measured per directed pair. These timings have different amortization units.</figcaption></figure>
+      </div></section>
+      <section class="alt"><div class="wrap"><h2>Citation</h2><pre class="citation"><code>@article{liu2026gamma,
+  title = {Geometry-Grounded Articulation and Test-Time Adaptation for Zero-Shot, Scalable Shape Matching in the Wild},
+  author = {Qilong Liu and Qinfeng Xiao and Chenyuan Yi and Yongsheng Lin and Liying Zhang and Kit-lun Yick},
+  journal = {arXiv preprint arXiv:2606.29167},
+  year = {2026}
+}</code></pre></div></section>
+    </main>
+    <footer><div class="wrap"><p>Code and reproduction instructions are available on <a href="https://github.com/liu-qilong/GAMMA" target="_blank" rel="noopener">GitHub</a>. Read the <a href="https://arxiv.org/abs/2606.29167" target="_blank" rel="noopener">paper</a> for evaluation protocols and limitations.</p></div></footer>
+  </body>
+</html>

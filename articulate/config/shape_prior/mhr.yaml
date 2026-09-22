@@ -1,0 +1,4 @@
+_target_: articulate.shape_prior.mhr_prior.MHRShapePrior
+
+mhr_path: pkg/sam_3d_body/checkpoints/sam-3d-body-dinov3/assets/mhr_model.pt
+device: ${device}

@@ -1,0 +1,17 @@
+texture_transfer:
+  _target_: match.metric.texture_transfer.TextureTransferMetric
+
+  out_dir: ${out_dir}/bench/texture-transfer
+  texture_path: match/metric/texture/texture-symbol-grid.png
+  # Builds spectral smoothing from the final hard p2p; no retained soft map needed.
+  use_soft_permutation: true
+  camera_position: xy
+  translation:
+    - 1
+    - 0
+    - 0
+  window_size:
+    - 1024
+    - 1024
+  zoom: 1.0
+  keep_mesh: true

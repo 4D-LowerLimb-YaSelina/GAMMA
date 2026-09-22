@@ -1,0 +1,116 @@
+exp_name: ulrssm/10k-xyz
+random_seed: 42
+deterministic: False
+network:
+    name: ULRSSM_PB
+    args: {}
+    point_descriptor:
+        name: XYZ_PB
+        args: {}
+    feature_extractor:
+        name: DiffusionNet_PB
+        args:
+            C_in: 3
+            C_out: 256
+    fm_solver:
+        name: RegularizedFMNet_PB
+        args: {}
+    permute_mat:
+        name: SoftmaxPermutationMatrix
+        args:
+            tau: 0.07
+    # load_from: ...
+train:
+    script: TrainScript
+    # script: DDPTrainScript
+    # world_size: 2
+    # backend: nccl
+    # ddp_port: 29500
+    test_interval: 6401
+    # test_interval: 5
+    checkpoint_interval: False
+    save_best: geodist
+    epochs: 10
+    dataset:
+        train:
+            name: PairRawFaust
+            args:
+                data_root: ../../data/shape-original/faust_10k/
+                raw_mesh_folder: ../../data/shape-original/faust_10k/scans/
+                mesh_type: obj
+                phase: train
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: False
+                return_dist: False
+                return_regist: False
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1  # per rank
+                    num_workers: 1  # per rank
+                    shuffle: True
+        test:
+            name: PairRawFaust
+            args:
+                data_root: ../../data/shape-original/faust_10k/
+                raw_mesh_folder: ../../data/shape-original/faust_10k/scans/
+                mesh_type: obj
+                phase: test
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+                return_regist: False
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1  # per rank
+                    num_workers: 1  # per rank
+    loss:
+        bij_loss:
+            name: BijectivityLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+        orth_loss:
+            name: OrthogonalityLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+        align_loss:
+            name: SpatialSpectralAlignmentLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+    metric:
+        geodist:
+            name: GeodesicDist_s2t_PB
+            args: {}
+    optimizer: 
+        feature_extractor:
+            name: Adam
+            # load_from: ...
+            args:
+                lr: 1.0e-3
+    scheduler:
+        feature_extractor:
+            name: CosineAnnealingLR
+            # name: ConstantLR
+            step_per_batch: False
+            step_per_epoch: True
+            # load_from: ...
+            args:
+                T_max: 10
+                eta_min: 1.0e-4
+                # {}
+    gradient_clipping:
+        max_norm: 1.0

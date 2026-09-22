@@ -1,0 +1,27 @@
+defaults:
+  - dense_anchor
+  - _self_
+
+_target_: articulate.shape_refiner.dense_anchor_point_to_plane_mhr_refiner.DenseAnchorPointToPlaneMHRShapeRefiner
+
+# Sampled-surface point-to-plane ICP.
+n_iters_icp: 500
+icp_lr: 1e-2
+icp_correspondence_interval: 10
+icp_src_subsample_num: 5000
+icp_tgt_sample_num: 50000
+icp_candidate_count: 8
+icp_max_distance: 0.05
+icp_normal_threshold: 0.3
+icp_sigma: 0.005
+icp_robust_delta: 2.5
+icp_point_to_plane_weight: 1.0
+icp_point_to_point_weight: 0.05
+icp_min_correspondences_per_view: 256
+
+# Always run the full inherited Chamfer polish and retain its best fixed-validation
+# checkpoint.
+n_iters_surface: 100
+early_stop_chamfer_plateau: false
+early_stop_validation_regression: false
+early_stop_check_interval: 20

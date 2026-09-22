@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+
+data/
+data_/
+output/
+logs/
+bench/
+
+*.pth
+*.csv
+*.pdf
+# *.png
+*.tfevents.*

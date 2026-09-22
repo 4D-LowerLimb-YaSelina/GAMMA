@@ -1,0 +1,94 @@
+_target_: articulate.shape_refiner.dense_anchor_mhr_refiner.DenseAnchorMHRShapeRefiner
+
+device: ${device}
+
+# Battle-tested Tukey-reweighted DLT triangulation settings.
+sigma_px: 5.0
+conf_thresh: 1e-2
+triangulation_iters: 2
+min_joint_views: 2
+min_anchor_views: 3
+joint_pixel_sigma: 5.0
+anchor_pixel_sigma: 10.0
+covariance_damping: 1e-6
+covariance_floor: 1e-3
+robust_delta: 2.5
+
+# Fixed canonical MHR anchor set.
+anchor_cache_path: output/cache/MHR_anchors.npy
+anchor_count: 1024
+anchor_visualization_size: 1024
+anchor_boundary_margin_pixels: 3.0
+anchor_visibility_depth_tolerance: 1e-2
+
+# Robust joint-only initialization.
+optimize_keypoints: true
+lr_keypoints: 1e-3
+n_iters_keypoints: 1000
+joint_term_weight: 1.0
+
+# Joint + anchor + weak raw-normal fitting.
+lr_anchors: 1e-2
+n_iters_anchors: 1000
+anchor_warmup_iters: 20
+anchor_term_weight: 1.0
+grounding_term_weight: 0.2
+sparse_shape_l2_term_weight: 0.0 # 1e-2
+grounding_distance_threshold: 0.05
+grounding_normal_threshold: 0.3
+grounding_sigma: 0.005
+grounding_min_component_faces: 100
+
+# Dense Chamfer polishing. Both directions enabled by default.
+optimize_surface: true
+n_views_surface: 0
+trim_mesh: true
+trim_threshold: 0.1
+merge_method: confidence_weighted
+lr_surface: 1e-2
+n_iters_surface: 1000
+src_to_tgt: true
+tgt_to_src: true
+src_subsample_num: 5000
+tgt_subsample_num: 5000
+dense_joint_term_weight: 0.0 # 0.1
+dense_anchor_term_weight: 0.0 # 0.1
+dense_grounding_term_weight: 0.0 # 0.02
+dense_shape_l2_term_weight: 0.0 # 1e-5
+
+# Kept as an opt-in compatibility term, disabled for this variant by default.
+bone_term_weight: 0.0
+keypoint_term_weight: 0.0
+
+# Fixed validation sets and task-aware stopping.
+validation_raw_samples: 4096
+validation_model_samples: 2048
+validation_probe_samples: 2048
+validation_seed: 0
+validation_query_chunk_size: 128
+validation_reference_chunk_size: 2048
+validation_face_chunk_size: 1024
+# Surface-first stopping: retain only validation-Chamfer criteria by default.
+early_stop_chamfer_plateau: true
+early_stop_validation_regression: true
+early_stop_canonical_map_stability: false
+early_stop_joint_drift: false
+early_stop_min_steps: 100
+early_stop_check_interval: 20
+early_stop_patience: 10
+early_stop_regression_patience: 2
+early_stop_relative_threshold: 1e-4
+early_stop_map_threshold: 1e-3
+early_stop_joint_degradation: 0.1
+early_stop_joint_penalty: 1e3
+
+# Existing uncertainty-aware fusion settings.
+view_residual_weights:
+  surface: 1.0
+  keypoint: 1.0
+  iou: 1.0
+  inlier: 1.0
+view_temperature: 1.0
+visibility_depth_tolerance: 1e-3
+visibility_pixel_radius: 1
+fusion_eps: 1e-8

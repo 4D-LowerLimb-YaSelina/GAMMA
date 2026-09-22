@@ -1,0 +1,190 @@
+exp_name: dt4d-h-inter/ulrssm+single
+random_seed: 0
+deterministic: False
+network:
+    name: ULRSSM_PB
+    args: {}
+    point_descriptor:
+        name: WKS_PB
+        args: {}
+    feature_extractor:
+        name: DiffusionNet_PB
+        args:
+            C_in: 128
+            C_out: 256
+    fm_solver:
+        name: RegularizedFMNet_PB
+        args: {}
+    permute_mat:
+        name: SoftmaxPermutationMatrix
+        args:
+            tau: 0.07
+    # load_from: ...
+train:
+    script: TrainScript
+    # script: DDPTrainScript
+    # world_size: 2
+    # backend: nccl
+    # ddp_port: 29500
+    test_interval: 445
+    checkpoint_interval: False
+    save_best: geodist
+    epochs: 1
+    dataset:
+        train:
+            name: CombinedDataset
+            args:
+                dt4d_intra:
+                    name: PairDT4D_H
+                    args:
+                        inter_class: False
+                        phase: train
+                        data_root: data/DT4D_r
+                        return_faces: True
+                        return_L: True
+                        return_mass: True
+                        num_evecs: 200
+                        return_evecs: True
+                        return_grad: True
+                        return_corr: False
+                        return_dist: False
+                dt4d_inter:
+                    name: PairDT4D_H
+                    args:
+                        inter_class: True
+                        phase: train
+                        data_root: data/DT4D_r
+                        return_faces: True
+                        return_L: True
+                        return_mass: True
+                        num_evecs: 200
+                        return_evecs: True
+                        return_grad: True
+                        return_corr: False
+                        return_dist: False
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 4  # per rank
+                    num_workers: 4  # per rank
+        test:
+            name: PairDT4D_H
+            args:
+                inter_class: True
+                phase: test
+                data_root: data/DT4D_r
+                return_faces: True
+                return_L: True
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 2 # per rank
+                    num_workers: 2  # per rank
+    loss:
+        bij_loss:
+            name: BijectivityLoss
+            weight: 1.0
+            args:
+                avg_mode: False
+        orth_loss:
+            name: OrthogonalityLoss
+            weight: 1.0
+            args:
+                avg_mode: False
+        align_loss:
+            name: SpatialSpectralAlignmentLoss
+            weight: 1.0
+            args:
+                avg_mode: False
+    metric:
+        geodist:
+            name: GeodesicDist_PB
+            args: {}
+    optimizer: 
+        feature_extractor:
+            name: Adam
+            # load_from: ...
+            args:
+                lr: 2.0e-3
+    scheduler:
+        feature_extractor:
+            name: CosineAnnealingLR
+            # name: ConstantLR
+            step_per_batch: True
+            step_per_epoch: False
+            # load_from: ...
+            args:
+                T_max: 2220
+                eta_min: 2.0e-4
+                # {}
+benchmark:
+    dt4d_intra:
+        script: BenchScript
+        # network_weight: ...
+        dataset:
+            name: PairDT4D_H
+            args:
+                inter_class: True
+                phase: train
+                data_root: data/DT4D_r
+                return_faces: True
+                return_L: True
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 4
+                    num_workers: 4
+                    shuffle: True
+        loss:
+            align_loss:
+                name: SpatialSpectralAlignmentLoss
+                weight: 1.0
+                args: {}
+        metric:
+            geodist:
+                name: GeodesicDist_PB
+                args: {}
+    dt4d_inter:
+        script: BenchScript
+        # network_weight: ...
+        dataset:
+            name: PairDT4D_H
+            args:
+                inter_class: True
+                phase: train
+                data_root: data/DT4D_r
+                return_faces: True
+                return_L: True
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 4
+                    num_workers: 4
+                    shuffle: True
+        loss:
+            align_loss:
+                name: SpatialSpectralAlignmentLoss
+                weight: 1.0
+                args: {}
+        metric:
+            geodist:
+                name: GeodesicDist_PB
+                args: {}

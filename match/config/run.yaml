@@ -1,0 +1,14 @@
+defaults:
+  - data: faust_r
+  - map_extractor: default
+  - metrics: [geodist]
+  - _self_
+
+out_dir: output/faust_r
+device: cuda
+batch_start: null
+batch_end: null
+
+hydra:
+  run:
+    dir: ${out_dir}/bench

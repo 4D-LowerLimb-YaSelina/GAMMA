@@ -1,0 +1,21 @@
+defaults:
+  - data: faust_raw_parallel
+  - map_extractor: partial_aware_spectral_parallel
+  - metrics: [geodist_s2t_cached,]
+  - _self_
+
+out_dir: output/faust_r_5k_parallel
+device: cuda
+batch_start: null
+batch_end: null
+
+data:
+  return_L: false
+  return_mass: true
+  return_evecs: false
+  return_grad: false
+  return_articulation_confidence: true
+
+hydra:
+  run:
+    dir: ${out_dir}/bench

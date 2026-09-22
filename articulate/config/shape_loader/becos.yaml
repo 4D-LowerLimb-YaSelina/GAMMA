@@ -1,0 +1,11 @@
+_target_: articulate.shape_loader.becos_mesh_loader.BeCoSMeshShapeLoader
+
+shape_dir: ${shape_dir}
+mode: ${mode}
+split: ${split}
+partial_only: ${partial_only}
+shape_extensions:
+  - .off
+filename_filter: null
+scale_factor: 1.0
+decimation: null

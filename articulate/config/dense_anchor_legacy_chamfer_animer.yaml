@@ -1,0 +1,4 @@
+defaults:
+  - uncertainty_aware_animer
+  - override /shape_refiner: dense_anchor_legacy_chamfer_animer
+  - _self_

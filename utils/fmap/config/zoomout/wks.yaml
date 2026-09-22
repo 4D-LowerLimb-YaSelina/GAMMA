@@ -1,0 +1,132 @@
+exp_name: zoomout/wks
+random_seed: 42
+deterministic: False
+network:
+    name: ZoomOut
+    args:
+        init_mode: 'wks'
+        k_init: 20
+        k_max: 200
+        step: 5
+    # load_from: ...
+train:
+    script: TrainScript
+    # script: DDPTrainScript
+    # world_size: 2
+    # backend: nccl
+    # ddp_port: 29500
+    # test_interval: 4001
+    test_interval: 10
+    checkpoint_interval: False
+    save_best: geodist
+    epochs: 0
+    dataset:
+        train:
+            name: PairBeCoS
+            args:
+                data_root: ../../data/shape-becos/faust_partial_full/
+                phase: train
+                mode: partial_full
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: False
+                return_dist: False
+                compute_cache: True
+                normalize_dist_by_area: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1
+                    num_workers: 0
+                    shuffle: True
+        test:
+            name: PairBeCoS
+            args:
+                data_root: ../../data/shape-becos/faust_partial_full/
+                phase: test
+                mode: partial_full
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+                compute_cache: True
+                normalize_dist_by_area: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1
+                    num_workers: 0
+    loss:
+        bij_loss:
+            name: BijectivityLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+        orth_loss:
+            name: OrthogonalityLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+    metric:
+        geodist:
+            name: GeodesicDist_s2t_PB_ZoomOut
+            args: {}
+    optimizer: 
+        all:
+            name: Adam
+            # load_from: ...
+            args:
+                lr: 1.0e-3
+    scheduler:
+        all:
+            name: ConstantLR
+            step_per_batch: False
+            step_per_epoch: True
+            # load_from: ...
+            args:
+                {}
+    gradient_clipping:
+        max_norm: 1.0
+benchmark:
+    becos_faust_f2p:
+        script: BenchScript
+        dataset:
+            name: PairBeCoS
+            args:
+                data_root: ../../data/shape-becos/faust_partial_full/
+                phase: test
+                mode: partial_full
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+                compute_cache: True
+                normalize_dist_by_area: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1
+                    num_workers: 0
+                    shuffle: False
+        loss:
+            align_loss:
+                name: SpatialSpectralAlignmentLoss
+                weight: 1.0
+                args:
+                    avg_mode: True
+        metric:
+            geodist:
+                name: BeCoSGeodesicDist_PB
+                args: {}

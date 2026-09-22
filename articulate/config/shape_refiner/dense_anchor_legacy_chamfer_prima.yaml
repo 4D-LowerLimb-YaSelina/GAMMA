@@ -1,0 +1,9 @@
+defaults:
+  - dense_anchor_prima
+  - _self_
+
+_target_: articulate.shape_refiner.dense_anchor_legacy_chamfer_smal_refiner.DenseAnchorLegacyChamferPRIMASMALShapeRefiner
+
+# The legacy PRIMA surface objective is pure bidirectional Chamfer.
+bone_term_weight: 0.0
+keypoint_term_weight: 0.0

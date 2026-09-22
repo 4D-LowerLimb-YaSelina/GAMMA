@@ -1,0 +1,7 @@
+_target_: articulate.output_handler.uncertainty_aware_output_handler.UncertaintyAwareOutputHandler
+
+out_dir: ${out_dir}
+visualization_views:
+  - xy
+  - xz
+  - zy

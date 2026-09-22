@@ -1,0 +1,6 @@
+_target_: articulate.output_handler.smal_output_handler.SMALOutputHandler
+
+out_dir: ${out_dir}
+visualization_views:
+  - xy
+  - zy

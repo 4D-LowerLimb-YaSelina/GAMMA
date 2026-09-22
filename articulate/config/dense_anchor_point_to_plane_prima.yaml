@@ -1,0 +1,4 @@
+defaults:
+  - uncertainty_aware_prima
+  - override /shape_refiner: dense_anchor_point_to_plane_prima
+  - _self_

@@ -1,0 +1,3 @@
+_target_: articulate.shape_prior.prima_smal_prior.PRIMASMALShapePrior
+
+device: ${device}

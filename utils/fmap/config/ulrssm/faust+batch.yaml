@@ -1,0 +1,169 @@
+exp_name: faust_r/ulrssm+batch
+random_seed: 0
+deterministic: False
+network:
+    name: ULRSSM_PB
+    args: {}
+    point_descriptor:
+        name: WKS_PB
+        args: {}
+    feature_extractor:
+        name: DiffusionNet_PB
+        args:
+            C_in: 128
+            C_out: 256
+    fm_solver:
+        name: RegularizedFMNet_PB
+        args: {}
+    permute_mat:
+        name: SoftmaxPermutationMatrix
+        args:
+            tau: 0.07
+    # load_from: ...
+train:
+    # script: TrainScript
+    script: DDPTrainScript
+    world_size: 2
+    backend: nccl
+    ddp_port: 29500
+    test_interval: 90
+    checkpoint_interval: False
+    save_best: geodist
+    epochs: 1
+    dataset:
+        train:
+            name: PairFAUST_r
+            args:
+                data_root: 'data/FAUST_r'
+                phase: 'train'
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: False
+                return_dist: False
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 8  # per rank
+                    num_workers: 4  # per rank
+        test:
+            name: PairFAUST_r
+            args:
+                data_root: 'data/FAUST_r'
+                phase: 'test'
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 8  # per rank
+                    num_workers: 2  # per rank
+    loss:
+        bij_loss:
+            name: BijectivityLoss
+            weight: 1.0
+            args:
+                avg_mode: False
+        orth_loss:
+            name: OrthogonalityLoss
+            weight: 1.0
+            args:
+                avg_mode: False
+        align_loss:
+            name: SpatialSpectralAlignmentLoss
+            weight: 1.0
+            args:
+                avg_mode: False
+    metric:
+        geodist:
+            name: GeodesicDist_PB
+            args: {}
+    optimizer: 
+        feature_extractor:
+            name: Adam
+            # load_from: ...
+            args:
+                lr: 4.0e-3
+    scheduler:
+        feature_extractor:
+            name: CosineAnnealingLR
+            # name: ConstantLR
+            step_per_batch: True
+            step_per_epoch: False
+            # load_from: ...
+            args:
+                T_max: 400
+                eta_min: 1.0e-3
+                # {}
+benchmark:
+    faust_r:
+        script: BenchScript
+        # network_weight: ...
+        dataset:
+            name: PairFAUST_r
+            args:
+                data_root: 'data/FAUST_r'
+                phase: 'test'
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 8
+                    num_workers: 4
+                    shuffle: True
+        loss:
+            align_loss:
+                name: SpatialSpectralAlignmentLoss
+                weight: 1.0
+                args: {}
+        metric:
+            geodist:
+                name: GeodesicDist_PB
+                args: {}
+    scape_r:
+        script: BenchScript
+        # network_weight: ...
+        dataset:
+            name: PairSCAPE_r
+            args:
+                data_root: 'data/SCAPE_r'
+                phase: 'test'
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 8
+                    num_workers: 4
+                    shuffle: True
+        loss:
+            align_loss:
+                name: SpatialSpectralAlignmentLoss
+                weight: 1.0
+                args: {}
+        metric:
+            geodist:
+                name: GeodesicDist_PB
+                args: {}

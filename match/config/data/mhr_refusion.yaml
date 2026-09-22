@@ -1,0 +1,29 @@
+_target_: match.data.mhr_refusion.PostHocMHRRefusionDataset
+
+dataset_name: faust_r
+data_root: data/FAUST_r
+articulated_shape_dir: output/faust_r_anchor
+articulated_subdir: mhr
+phase: test
+return_faces: true
+return_L: true
+return_mass: true
+num_evecs: 200
+return_evecs: true
+return_grad: true
+return_corr: true
+return_dist: true
+
+artifact_root: ${.articulated_shape_dir}
+mhr_path: pkg/sam_3d_body/checkpoints/sam-3d-body-dinov3/assets/mhr_model.pt
+device: ${device}
+
+minimum_iou: 0.0
+view_residual_weights:
+  surface: 1.0
+  keypoint: 1.0
+  iou: 1.0
+  inlier: 1.0
+view_temperature: 1.0
+fusion_eps: 1e-8
+use_visibility_in_vertex_confidence: true

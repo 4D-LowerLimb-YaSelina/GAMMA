@@ -1,0 +1,10 @@
+_target_: articulate.shape_loader.animer_mesh_loader.AniMerMeshShapeLoader
+
+shape_dir: ${shape_dir}
+shape_extensions:
+  - .obj
+  - .ply
+  - .off
+filename_filter: null
+scale_factor: 1.0
+decimation: null

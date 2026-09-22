@@ -1,0 +1,141 @@
+exp_name: ulrssm-becos/faust_p2p_xyz
+random_seed: 0
+deterministic: False
+network:
+    name: ULRSSM_PB
+    args: {}
+    point_descriptor:
+        name: XYZ_PB
+        args: {}
+    feature_extractor:
+        name: DiffusionNet_PB
+        args:
+            C_in: 3
+            C_out: 256
+    fm_solver:
+        name: RegularizedFMNet_PB
+        args: {}
+    permute_mat:
+        name: SoftmaxPermutationMatrix
+        args:
+            tau: 0.07
+train:
+    script: TrainScript
+    test_interval: 1601
+    checkpoint_interval: False
+    save_best: geodist
+    epochs: 10
+    dataset:
+        train:
+            name: PairBeCoS
+            args:
+                data_root: ../../data/shape-becos/faust_partial_partial/
+                phase: train
+                mode: partial_partial
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: False
+                return_dist: False
+                compute_cache: True
+                normalize_dist_by_area: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1
+                    num_workers: 0
+                    shuffle: True
+        test:
+            name: PairBeCoS
+            args:
+                data_root: ../../data/shape-becos/faust_partial_partial/
+                phase: test
+                mode: partial_partial
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+                compute_cache: True
+                normalize_dist_by_area: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1
+                    num_workers: 0
+    loss:
+        bij_loss:
+            name: BijectivityLoss_f2p
+            weight: 1.0
+            args:
+                avg_mode: True
+        orth_loss:
+            name: OrthogonalityLoss_f2p
+            weight: 1.0
+            args:
+                avg_mode: True
+        align_loss:
+            name: SpatialSpectralAlignmentLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+    metric:
+        geodist:
+            name: BeCoSGeodesicDist_PB
+            args: {}
+    optimizer:
+        feature_extractor:
+            name: Adam
+            args:
+                lr: 1.0e-3
+    scheduler:
+        feature_extractor:
+            name: CosineAnnealingLR
+            step_per_batch: False
+            step_per_epoch: True
+            args:
+                T_max: 10
+                eta_min: 1.0e-4
+    gradient_clipping:
+        max_norm: 1.0
+benchmark:
+    becos_faust_p2p_xyz:
+        script: BenchScript
+        dataset:
+            name: PairBeCoS
+            args:
+                data_root: ../../data/shape-becos/faust_partial_partial/
+                phase: test
+                mode: partial_partial
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+                compute_cache: True
+                normalize_dist_by_area: True
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1
+                    num_workers: 0
+                    shuffle: False
+        loss:
+            align_loss:
+                name: SpatialSpectralAlignmentLoss
+                weight: 1.0
+                args:
+                    avg_mode: True
+        metric:
+            geodist:
+                name: BeCoSGeodesicDist_PB
+                args: {}

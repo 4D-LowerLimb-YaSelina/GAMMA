@@ -1,0 +1,21 @@
+defaults:
+  - data: mhr_refusion
+  - map_extractor: partial_aware
+  - metrics: [geodist]
+  - _self_
+
+out_dir: output/faust_r_refusion
+device: cuda
+batch_start: null
+batch_end: null
+
+data:
+  return_L: false
+  return_mass: false
+  return_evecs: false
+  return_grad: false
+  return_articulation_confidence: true
+
+hydra:
+  run:
+    dir: ${out_dir}/bench

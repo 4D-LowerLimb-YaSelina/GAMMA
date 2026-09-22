@@ -1,0 +1,4 @@
+defaults:
+  - uncertainty_aware_prima
+  - override /shape_refiner: dense_anchor_legacy_chamfer_prima
+  - _self_

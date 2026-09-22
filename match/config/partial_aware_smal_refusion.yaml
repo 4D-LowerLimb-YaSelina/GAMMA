@@ -1,0 +1,27 @@
+defaults:
+  - data: smal_r_refusion
+  - map_extractor: partial_aware_smal
+  - metrics: [geodist]
+  - _self_
+
+out_dir: output/smal_r_refusion
+device: cuda
+batch_start: null
+batch_end: null
+
+data:
+  return_L: false
+  return_mass: false
+  return_evecs: false
+  return_grad: false
+  return_articulation_confidence: true
+
+# See docs/smal-refusion.md for parameter trade-offs and sweep guidance.
+# First post-hoc filtering experiment:
+# data.minimum_iou=0.6
+# data.view_residual_weights='{surface: 1000, keypoint: 100, iou: 1, inlier: 1}'
+# data.view_temperature=0.5
+
+hydra:
+  run:
+    dir: ${out_dir}/bench

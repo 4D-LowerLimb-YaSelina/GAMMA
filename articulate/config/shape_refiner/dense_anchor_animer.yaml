@@ -1,0 +1,66 @@
+defaults:
+  - uncertainty_aware_smal
+  - _self_
+
+_target_: articulate.shape_refiner.dense_anchor_smal_refiner.DenseAnchorSMALShapeRefiner
+
+# Robust joint and anchor triangulation.
+min_joint_views: 2
+min_anchor_views: 3
+joint_pixel_sigma: 5.0
+anchor_pixel_sigma: 10.0
+covariance_damping: 1e-6
+covariance_floor: 1e-3
+robust_delta: 2.5
+
+# Shared neutral SMAL anchor set.
+anchor_cache_path: output/cache/SMAL_anchors.npy
+anchor_count: 1024
+anchor_visualization_size: 1024
+anchor_boundary_margin_pixels: 3.0
+anchor_visibility_depth_tolerance: 1e-2
+
+# Robust joint-only initialization.
+joint_term_weight: 1.0
+
+# Joint, anchor, and weak raw-normal initialization.
+lr_anchors: 1e-2
+n_iters_anchors: 1000
+anchor_warmup_iters: 20
+anchor_term_weight: 1.0
+grounding_term_weight: 0.2
+sparse_shape_l2_term_weight: 0.0
+grounding_distance_threshold: 0.05
+grounding_normal_threshold: 0.3
+grounding_sigma: 0.005
+grounding_min_component_faces: 100
+
+# Surface-first Chamfer polishing.
+n_views_surface: 0
+tgt_to_src: true
+dense_joint_term_weight: 0.0
+dense_anchor_term_weight: 0.0
+dense_grounding_term_weight: 0.0
+dense_shape_l2_term_weight: 0.0
+
+# Fixed validation sets and independent stopping controls.
+validation_raw_samples: 4096
+validation_model_samples: 2048
+validation_probe_samples: 2048
+validation_seed: 0
+validation_query_chunk_size: 128
+validation_reference_chunk_size: 2048
+validation_face_chunk_size: 1024
+restore_best_surface_checkpoint: true
+early_stop_chamfer_plateau: true
+early_stop_validation_regression: true
+early_stop_canonical_map_stability: false
+early_stop_joint_drift: false
+early_stop_min_steps: 100
+early_stop_check_interval: 20
+early_stop_patience: 10
+early_stop_regression_patience: 2
+early_stop_relative_threshold: 1e-4
+early_stop_map_threshold: 1e-3
+early_stop_joint_degradation: 0.1
+early_stop_joint_penalty: 1e3

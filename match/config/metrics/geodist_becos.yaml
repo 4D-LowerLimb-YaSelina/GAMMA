@@ -1,0 +1,5 @@
+geodist:
+  _target_: match.metric.becos_geodist.BeCoSGeodistMetric
+
+  out_dir: ${out_dir}
+  export_path: null

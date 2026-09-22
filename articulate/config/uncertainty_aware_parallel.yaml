@@ -1,0 +1,11 @@
+defaults:
+  - uncertainty_aware
+  - override /shape_estimator: uncertainty_aware_batched_sam3d_body
+  - override /shape_refiner: uncertainty_aware_prefetched
+  - _self_
+
+runtime_logging:
+  enabled: true
+  filename: articulation_runtime.jsonl
+  pipeline: uncertainty_aware_parallel
+  synchronize_cuda: true

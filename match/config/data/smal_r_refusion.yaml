@@ -1,0 +1,31 @@
+_target_: match.data.prima_smal_refusion.PostHocPRIMASMALRefusionDataset
+
+dataset_name: smal_r
+data_root: data/SMAL_r
+articulated_shape_dir: output/smal_r_prima_anchor_no_iou
+articulated_subdir: null
+phase: test
+return_faces: true
+return_L: true
+return_mass: true
+num_evecs: 200
+return_evecs: true
+return_grad: true
+return_corr: true
+return_dist: true
+split_category: true
+
+artifact_root: ${.articulated_shape_dir}
+prima_pkg_path: pkg/PRIMA
+checkpoint_path: pkg/PRIMA/data/PRIMAS1/checkpoints/s1ckpt_inference.ckpt
+device: ${device}
+
+minimum_iou: 0.0
+view_residual_weights:
+  surface: 1.0
+  keypoint: 1.0
+  iou: 1.0
+  inlier: 1.0
+view_temperature: 1.0
+fusion_eps: 1e-8
+use_visibility_in_vertex_confidence: true

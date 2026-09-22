@@ -1,0 +1,29 @@
+_target_: articulate.shape_estimator.uncertainty_aware_smal_estimator.UncertaintyAwareAniMerShapeEstimator
+
+device: ${device}
+
+retry_iou_threshold: true
+iou_retry_step: 0.1
+min_iou_threshold: 0.0
+
+animer_pkg_path: pkg/AniMer
+checkpoint_path: pkg/AniMer/data/AniMer/checkpoints/checkpoint.ckpt
+detector_config: COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml
+detector_weights: https://dl.fbaipublicfiles.com/detectron2/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x/139173657/model_final_68b088.pkl
+detector_score_threshold: 0.5
+animal_score_threshold: 0.7
+animal_class_ids:
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 21
+  - 22
+iou_threshold: 0.7
+
+ransac_n_iters: 3000
+ransac_sample_size: 8
+ransac_inlier_thresh: 0.02
+ransac_min_inliers: 500
+ransac_seed: 0

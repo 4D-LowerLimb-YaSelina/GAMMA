@@ -1,0 +1,11 @@
+defaults:
+  - faust_raw
+  - _self_
+
+_target_: match.data.raw_faust.ParallelRawFAUSTArticulatedShapeCorrDataset
+
+return_mass: false
+return_evecs: false
+shape_loading_workers: 4
+pair_prefetch_depth: 32
+max_cached_shapes: 20

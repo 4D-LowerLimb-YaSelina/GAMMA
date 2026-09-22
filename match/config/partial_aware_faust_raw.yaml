@@ -1,0 +1,23 @@
+defaults:
+  - data: faust_raw
+  - map_extractor: partial_aware_spectral
+  - metrics: [geodist_s2t,]
+  # - metrics: [geodist_s2t, texture_transfer]
+  - metrics: [texture_transfer,]
+  - _self_
+
+out_dir: output/faust_r_5k
+device: cuda
+batch_start: null
+batch_end: null
+
+data:
+  return_L: false
+  return_mass: true
+  return_evecs: true
+  return_grad: false
+  return_articulation_confidence: true
+
+hydra:
+  run:
+    dir: ${out_dir}/bench

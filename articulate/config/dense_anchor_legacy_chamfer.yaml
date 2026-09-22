@@ -1,0 +1,4 @@
+defaults:
+  - dense_anchor
+  - override /shape_refiner: dense_anchor_legacy_chamfer
+  - _self_

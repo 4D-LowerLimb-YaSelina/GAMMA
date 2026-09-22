@@ -1,0 +1,156 @@
+exp_name: 3dmd-jump-10k/ulrssm
+random_seed: 42
+deterministic: False
+network:
+    name: ULRSSM_PB
+    args: {}
+    point_descriptor:
+        name: WKS_PB
+        args: {}
+    feature_extractor:
+        name: DiffusionNet_PB
+        args:
+            C_in: 128
+            C_out: 256
+    fm_solver:
+        name: RegularizedFMNet_PB
+        args: {}
+    permute_mat:
+        name: SoftmaxPermutationMatrix
+        args:
+            tau: 0.07
+    # load_from: ...
+train:
+    script: TrainScript
+    # script: DDPTrainScript
+    # world_size: 2
+    # backend: nccl
+    # ddp_port: 29500
+    test_interval: 4097
+    # test_interval: 5
+    checkpoint_interval: False
+    save_best: geodist
+    epochs: 3
+    dataset:
+        train:
+            name: PairArticulatedMesh
+            args:
+                data_root: ../../output/3dmd_jump_10k/
+                raw_mesh_folder: ../../output/3dmd_jump_10k/trimmed
+                mesh_type: obj
+                phase: full
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: False
+                return_dist: False
+                return_regist: False
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1  # per rank
+                    num_workers: 1  # per rank
+                    shuffle: True
+        test:
+            name: PairArticulatedMesh
+            args:
+                data_root: ../../output/faust_raw_10k/
+                raw_mesh_folder: ../../output/faust_raw_10k/decimated
+                mesh_type: obj
+                phase: full
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: True
+                return_dist: True
+                return_regist: False
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1  # per rank
+                    num_workers: 1  # per rank
+    loss:
+        bij_loss:
+            name: BijectivityLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+        orth_loss:
+            name: OrthogonalityLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+        align_loss:
+            name: SpatialSpectralAlignmentLoss
+            weight: 1.0
+            args:
+                avg_mode: True
+    metric:
+        geodist:
+            name: GeodesicDist_s2t_PB
+            args: {}
+    optimizer: 
+        feature_extractor:
+            name: Adam
+            # load_from: ...
+            args:
+                lr: 1.0e-3
+    scheduler:
+        feature_extractor:
+            name: ConstantLR
+            step_per_batch: False
+            step_per_epoch: True
+            # load_from: ...
+            args:
+                {}
+    gradient_clipping:
+        max_norm: 1.0
+benchmark:
+    3dmd_jump:
+        script: BenchScript
+        # network_weight: ...
+        dataset:
+            name: PairArticulatedMesh
+            args:
+                data_root: ../../output/3dmd_jump_10k/
+                raw_mesh_folder: ../../output/3dmd_jump_10k/trimmed
+                mesh_type: obj
+                phase: full
+                return_faces: True
+                return_L: False
+                return_mass: True
+                num_evecs: 200
+                return_evecs: True
+                return_grad: True
+                return_corr: False
+                return_dist: False
+                return_regist: False
+            dataloader:
+                name: BatchShapePairDataLoader
+                args:
+                    batch_size: 1  # per rank
+                    num_workers: 1  # per rank
+        loss: {}
+        metric:
+            # geodist:
+            #     name: GeodesicDist_s2t_PB
+            #     args: {}
+            texture-transfer:
+                name: TextureTransferSample
+                args:
+                    start_batch: 0
+                    end_batch: 64
+                    batch_interval: 1
+                    texture_file: 'gallery/texture-symbol-grid.png'
+                    shape_disp: [1, 0, 0]
+                    camera_position: 'xy'
+                    window_size: [1024, 1024]
+                    output_folder: 'bench/texture-transfer-3dmd-jump'
+                    zoom: 1.0
+                    keep_mesh: True

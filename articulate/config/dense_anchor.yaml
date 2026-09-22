@@ -1,0 +1,16 @@
+defaults:
+  - shape_loader: default
+  - view_sampler: default
+  - shape_estimator: uncertainty_aware_sam3d_body
+  - shape_prior: mhr
+  - shape_refiner: dense_anchor
+  - output_handler: uncertainty_aware
+  - _self_
+
+shape_dir: ???
+out_dir: output
+device: cuda
+
+hydra:
+  run:
+    dir: ${out_dir}

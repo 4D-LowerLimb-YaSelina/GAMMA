@@ -1,0 +1,10 @@
+ipykernel
+trimesh
+networkx
+robust-laplacian
+potpourri3d
+open3d
+pyvista[all]
+h5py
+tensorboard
+yacs

@@ -1,0 +1,16 @@
+defaults:
+  - shape_loader: animer
+  - view_sampler: animer
+  - shape_estimator: animer
+  - shape_prior: smal
+  - shape_refiner: smal
+  - output_handler: smal
+  - _self_
+
+shape_dir: ???
+out_dir: output
+device: cuda
+
+hydra:
+  run:
+    dir: ${out_dir}

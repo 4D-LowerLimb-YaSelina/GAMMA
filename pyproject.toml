@@ -1,0 +1,123 @@
+[project]
+name = "ATM"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "torch==2.5.1",
+    "torchvision==0.20.1",
+    "pytorch-lightning",
+    "pyrender",
+    "opencv-python",
+    "yacs",
+    "scikit-image",
+    "einops",
+    "timm",
+    "dill",
+    "pandas",
+    "rich",
+    "hydra-core",
+    "hydra-submitit-launcher",
+    "hydra-colorlog",
+    "pyrootutils",
+    "webdataset",
+    "chump",
+    "networkx==3.2.1",
+    "roma",
+    "joblib",
+    "seaborn",
+    "wandb",
+    "appdirs",
+    "appnope",
+    "ffmpeg",
+    "cython",
+    "jsonlines",
+    "pytest",
+    "xtcocotools",
+    "loguru",
+    "optree",
+    "fvcore",
+    "black",
+    "pycocotools",
+    "tensorboard",
+    "huggingface_hub",
+    "detectron2",
+    "ultralytics",
+    "moge",
+    "tensorrt-cu12",
+    "tensorrt-cu12-bindings",
+    "tensorrt-cu12-libs",
+    "onnx",
+    "onnxruntime-gpu",
+    "nvtx",
+    "smplx",
+    "numpy",
+    "scipy",
+    "scikit-learn",
+    "trimesh",
+    "fast-simplification>=0.1.13",
+    "robust-laplacian",
+    "potpourri3d",
+    "open3d",
+    "pillow",
+    "rtree",
+    "tqdm",
+    "pyzmq",
+    "pyrealsense2",
+    "chumpy",
+    "addict>=2.4.0",
+    "spconv-cu124>=2.3.8",
+    "torch_scatter",
+    "jupyter-events==0.12.0",
+    "jupyter-server==2.17.0",
+    "jupyter-server-proxy==4.4.0",
+    "jupyter-server-terminals==0.5.3",
+    "jupyterlab-pygments==0.3.0",
+    "jupyterlab-widgets==3.0.16",
+    "trame==3.12.0",
+    "trame-client==3.11.2",
+    "trame-common==1.1.0",
+    "trame-server==3.9.0",
+    "trame-vtk==2.10.1",
+    "trame-vuetify==3.2.0",
+    "pyvista[jupyter]==0.46.4",
+    "ipykernel>=7.2.0",
+    "setuptools==80.8.0",
+    "socksio>=1.0.0",
+    "scienceplots>=2.2.2",
+]
+
+[tool.uv]
+no-build-isolation-package = ["detectron2"]
+
+[tool.uv.extra-build-variables]
+detectron2 = { CUDA_HOME = "/usr/local/cuda-12.4" }
+
+[tool.uv.extra-build-dependencies]
+chumpy = ["setuptools", "pip"]
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[[tool.uv.index]]
+name = "pyg-cu124"
+url = "https://data.pyg.org/whl/torch-2.5.1+cu124.html"
+format = "flat"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+torchvision = { index = "pytorch-cu124" }
+detectron2 = { git = "https://github.com/facebookresearch/detectron2.git", rev = "a1ce2f9" }
+moge = { git = "https://github.com/microsoft/MoGe.git" }
+torch_scatter = { index = "pyg-cu124" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

@@ -1,0 +1,9 @@
+defaults:
+  - partial_aware_spectral
+  - _self_
+
+_target_: match.map_extractor.parallel_spectral_refined_partial_aware_map_extractor.ParallelSpectrallyRefinedPartialAwareMapExtractor
+
+ckdtree_workers: 4
+cache_device_shape_tensors: true
+return_soft_maps: false

@@ -1,0 +1,15 @@
+defaults:
+  - uncertainty_aware_sam3d_body
+  - _self_
+
+_target_: articulate.shape_estimator.batched_uncertainty_aware_sam3d_body_estimator.BatchedUncertaintyAwareSAM3DShapeEstimator
+
+batch_sam3d_inference: true
+sam3d_inference_batch_size: 6
+batch_failure_fallback: true
+batch_view_preparation: true
+detector_batch_size: 1
+view_preparation_workers: 4
+view_preparation_depth: 8
+alignment_workers: 16
+alignment_prefetch_depth: 32

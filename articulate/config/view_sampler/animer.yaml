@@ -1,0 +1,15 @@
+_target_: articulate.view_sampler.multi_view_sampler.MultiViewSampler
+
+elevation_config: multi_3level
+rotation_step: 45.0
+elevation_angles: null
+rotations_per_elevation: null
+camera_dist: 4.0
+axis_order: xyz
+camera_configs:
+  focal_length: 1000.0
+  camera_center:
+    - 256
+    - 256
+  h: 512
+  w: 512

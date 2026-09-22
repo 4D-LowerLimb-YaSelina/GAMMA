@@ -1,0 +1,23 @@
+_target_: articulate.shape_estimator.sam3d_body_estimator.SAM3DShapeEstimator
+
+device: ${device}
+
+# iou retry scheme
+retry_iou_threshold: true
+iou_retry_step: 0.1
+min_iou_threshold: 0.0
+
+# SAM 3D Body settings
+sam3d_pkg_path: pkg/sam_3d_body
+mhr_path: ${shape_prior.mhr_path}
+checkpoint_path: pkg/sam_3d_body/checkpoints/sam-3d-body-dinov3/model.ckpt
+detector_name: vitdet
+fov_name: moge2
+iou_threshold: 0.7
+
+# SE(3) alignment settings
+ransac_n_iters: 3000
+ransac_sample_size: 8
+ransac_inlier_thresh: 0.02
+ransac_min_inliers: 500
+ransac_seed: 0

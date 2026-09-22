@@ -1,0 +1,14 @@
+defaults:
+  - data: becos
+  - map_extractor: partial_aware_spectral
+  - metrics: [geodist_becos]
+  - _self_
+
+out_dir: output/faust_partial_full_uncertainty
+device: cuda
+batch_start: null
+batch_end: null
+
+hydra:
+  run:
+    dir: ${out_dir}/bench

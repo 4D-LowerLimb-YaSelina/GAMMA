@@ -1,0 +1,17 @@
+_target_: match.data.raw_faust.RawFAUSTArticulatedShapeCorrDataset
+
+dataset_name: faust_raw
+data_root: data/shape-original/faust_5k
+raw_mesh_subdir: scans
+raw_mesh_extension: obj
+articulated_shape_dir: output/faust_r_5k
+articulated_subdir: mhr
+phase: test
+return_faces: true
+return_L: false
+return_mass: true
+num_evecs: 200
+return_evecs: true
+return_grad: false
+return_corr: true
+return_dist: true

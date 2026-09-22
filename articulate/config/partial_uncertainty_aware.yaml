@@ -1,0 +1,19 @@
+defaults:
+  - shape_loader: becos
+  - view_sampler: default
+  - shape_estimator: uncertainty_aware_sam3d_body
+  - shape_prior: mhr
+  - shape_refiner: partial_uncertainty_aware
+  - output_handler: becos_uncertainty_aware
+  - _self_
+
+shape_dir: data/shape-becos/faust_partial_full
+mode: partial_full
+split: test
+partial_only: false
+out_dir: output/faust_partial_full_uncertainty
+device: cuda
+
+hydra:
+  run:
+    dir: ${out_dir}

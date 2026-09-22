@@ -1,0 +1,16 @@
+defaults:
+  - shape_loader: animer
+  - view_sampler: animer
+  - shape_estimator: uncertainty_aware_animer
+  - shape_prior: smal
+  - shape_refiner: uncertainty_aware_smal
+  - output_handler: uncertainty_aware_smal
+  - _self_
+
+shape_dir: ???
+out_dir: output
+device: cuda
+
+hydra:
+  run:
+    dir: ${out_dir}

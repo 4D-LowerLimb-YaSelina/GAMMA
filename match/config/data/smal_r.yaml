@@ -1,0 +1,17 @@
+_target_: match.data.articulated_shape_corr.ArticulatedShapeCorrDataset
+
+dataset_name: smal_r
+data_root: data/SMAL_r
+articulated_shape_dir: output/smal_r
+articulated_subdir: null
+phase: test
+return_faces: true
+return_L: true
+return_mass: true
+num_evecs: 200
+return_evecs: true
+return_grad: true
+return_corr: true
+return_dist: true
+split_category: true
+

@@ -1,0 +1,6 @@
+_target_: match.map_extractor.spectral_map_extractor.SpectralMapExtractor
+
+device: ${device}
+method: spectral-icp
+n_iters: 1
+spectral_icp_chunk_size: 2048

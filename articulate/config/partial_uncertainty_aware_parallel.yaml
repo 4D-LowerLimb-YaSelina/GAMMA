@@ -1,0 +1,5 @@
+defaults:
+  - partial_uncertainty_aware
+  - override /shape_estimator: uncertainty_aware_batched_sam3d_body
+  - override /shape_refiner: partial_uncertainty_aware_prefetched
+  - _self_

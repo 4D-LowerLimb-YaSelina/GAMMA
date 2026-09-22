@@ -1,0 +1,18 @@
+_target_: match.map_extractor.partial_aware_soft_map_extractor.PartialAwareSoftCanonizationMapExtractor
+
+device: ${device}
+distance_scale: 0.02
+uncertainty_scale: 0.02
+kappa_factor: 1.0
+eps: 1e-8
+cache_canonicalization: true
+matching_mode: full
+use_visibility_term: false
+use_smooth_kernel: false
+use_reciprocal_consistency: false
+return_soft_maps: false
+smooth_kernel_cache_path: output/cache/MHR_smooth_kernel.npy
+smooth_kernel_mhr_path: pkg/sam_3d_body/checkpoints/sam-3d-body-dinov3/assets/mhr_model.pt
+smooth_kernel_sigma_factor: 0.01
+smooth_kernel_min_weight: 1e-3
+smooth_kernel_batch_size: 128

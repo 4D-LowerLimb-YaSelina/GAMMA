@@ -1,0 +1,35 @@
+_target_: articulate.shape_refiner.uncertainty_aware_mhr_refiner.UncertaintyAwareMHRShapeRefiner
+
+device: ${device}
+
+sigma_px: 5.0
+conf_thresh: 1e-2
+triangulation_iters: 2
+trim_threshold: 0.1
+
+optimize_keypoints: true
+lr_keypoints: 1e-3
+n_iters_keypoints: 1000
+
+optimize_surface: true
+n_views_surface: 3
+trim_mesh: true
+merge_method: confidence_weighted
+lr_surface: 1e-2
+n_iters_surface: 1000
+bone_term_weight: 1.0
+keypoint_term_weight: 0.1
+src_to_tgt: true
+src_subsample_num: 5000
+tgt_subsample_num: 5000
+
+view_residual_weights:
+  surface: 1.0
+  keypoint: 1.0
+  iou: 1.0
+  inlier: 1.0
+view_temperature: 1.0
+visibility_depth_tolerance: 1e-3
+visibility_pixel_radius: 1
+fusion_eps: 1e-8
+use_visibility_in_vertex_confidence: false
