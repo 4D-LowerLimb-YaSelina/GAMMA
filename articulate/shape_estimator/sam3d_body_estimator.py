@@ -94,7 +94,8 @@ def ransac_similarity_transform(
 
     if best_inliers is None:
         R, t, s = compute_similarity_transform(src, dst)
-        return R, t, s, np.ones((N,), dtype=bool)
+        inliers = np.ones((N,), dtype=bool)
+        return R, t, s, inliers, src, dst
 
     src_inliers, dst_inliers = src[best_inliers], dst[best_inliers]
     R, t, s = compute_similarity_transform(src_inliers, dst_inliers)
@@ -259,14 +260,28 @@ class SAM3DShapeEstimator:
             self.init_estimator()
 
         K_tensor = torch.tensor(K).unsqueeze(0).to(self.device)
+
+        # 离线自适应模式: 若未配置通用目标检测器，自动从 3D 渲染图前景计算紧密 bounding box
+        bboxes = None
+        if self.detector_name is None:
+            non_zero = np.any(img_rgb > 5, axis=-1)
+            if np.any(non_zero):
+                ys, xs = np.where(non_zero)
+                pad_h = int((ys.max() - ys.min()) * 0.08)
+                pad_w = int((xs.max() - xs.min()) * 0.08)
+                ymin, ymax = max(0, ys.min() - pad_h), min(img_rgb.shape[0], ys.max() + pad_h)
+                xmin, xmax = max(0, xs.min() - pad_w), min(img_rgb.shape[1], xs.max() + pad_w)
+                bboxes = np.array([[xmin, ymin, xmax, ymax]], dtype=np.float32)
+
         outputs = self.estimator.process_one_image(
             img=img_rgb,
+            bboxes=bboxes,
             cam_int=K_tensor,
             inference_type="body",
         )
 
-        assert len(outputs) == 1, (
-            f"expecting one detected human but found {len(outputs)}."
+        assert len(outputs) >= 1, (
+            f"expecting at least one detected human but found {len(outputs)}."
         )
         return outputs[0]
 

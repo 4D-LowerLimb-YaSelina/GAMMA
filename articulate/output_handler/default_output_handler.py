@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import pyvista as pv
+pv.global_theme.allow_empty_mesh = True
 from hydra.utils import to_absolute_path
 
 

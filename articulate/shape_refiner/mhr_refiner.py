@@ -311,10 +311,15 @@ def bone_length_loss(
 
     losses = []
     for i, j in bone_pairs:
-        bone_pred = torch.norm(keypoints_pred[:, i, :] - keypoints_pred[:, j, :], dim=1)
-        bone_gt = torch.norm(keypoints_gt[:, i, :] - keypoints_gt[:, j, :], dim=1)
-        diff = (bone_pred - bone_gt) ** 2
-        losses.append(diff)
+        valid_mask = torch.isfinite(keypoints_gt[:, i, :]).all(dim=-1) & torch.isfinite(keypoints_gt[:, j, :]).all(dim=-1)
+        if valid_mask.any():
+            bone_pred = torch.norm(keypoints_pred[:, i, :] - keypoints_pred[:, j, :], dim=1)
+            bone_gt = torch.norm(keypoints_gt[:, i, :] - keypoints_gt[:, j, :], dim=1)
+            diff = torch.where(valid_mask, (bone_pred - bone_gt) ** 2, torch.zeros_like(bone_pred))
+            losses.append(diff)
+
+    if len(losses) == 0:
+        return torch.tensor(0.0, device=keypoints_pred.device, dtype=keypoints_pred.dtype)
 
     losses = torch.stack(losses, dim=1)
 
@@ -508,7 +513,16 @@ class MHRShapeRefiner:
                 return_keypoints=True,
             )
 
-            loss = ((keypoints_coords[:, :70, :] - keypoints_gt) ** 2).sum(dim=2).mean()
+            valid_mask = torch.isfinite(keypoints_gt[:, :70, :])
+            if valid_mask.any():
+                diff = torch.where(
+                    valid_mask,
+                    keypoints_coords[:, :70, :] - keypoints_gt[:, :70, :],
+                    torch.zeros_like(keypoints_coords[:, :70, :]),
+                )
+                loss = (diff ** 2).sum() / valid_mask.float().sum().clamp(min=1.0)
+            else:
+                loss = torch.tensor(0.0, device=device, requires_grad=True)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -518,7 +532,7 @@ class MHRShapeRefiner:
     def trim_mesh_by_results(
         self, mesh: trimesh.Trimesh, results: Dict
     ) -> trimesh.Trimesh:
-        filter_points = np.concat(
+        filter_points = np.concatenate(
             [value["alignment"]["points_tgt_ori"] for value in results.values()],
             axis=0,
         )
@@ -694,12 +708,16 @@ class MHRShapeRefiner:
                 )
 
             if X_hat is not None and self.keypoint_term_weight > 0.0:
-                loss += (
-                    self.keypoint_term_weight
-                    * ((keypoints_coords[:, :70, :] - keypoints_gt) ** 2)
-                    .sum(dim=2)
-                    .mean()
-                )
+                valid_mask = torch.isfinite(keypoints_gt[:, :70, :])
+                if valid_mask.any():
+                    diff = torch.where(
+                        valid_mask,
+                        keypoints_coords[:, :70, :] - keypoints_gt[:, :70, :],
+                        torch.zeros_like(keypoints_coords[:, :70, :]),
+                    )
+                    loss += self.keypoint_term_weight * (
+                        (diff ** 2).sum() / valid_mask.float().sum().clamp(min=1.0)
+                    )
 
             optimizer.zero_grad()
             loss.backward()

@@ -4,7 +4,9 @@ from typing import Dict, List, Optional, Tuple
 import numpy as np
 from tqdm import tqdm
 
-os.environ["PYOPENGL_PLATFORM"] = "egl"
+import sys
+if sys.platform.startswith("linux") and "PYOPENGL_PLATFORM" not in os.environ:
+    os.environ["PYOPENGL_PLATFORM"] = "egl"
 import pyrender
 
 

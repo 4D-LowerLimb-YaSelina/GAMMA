@@ -11,8 +11,8 @@ min_iou_threshold: 0.0
 sam3d_pkg_path: pkg/sam_3d_body
 mhr_path: ${shape_prior.mhr_path}
 checkpoint_path: pkg/sam_3d_body/checkpoints/sam-3d-body-dinov3/model.ckpt
-detector_name: vitdet
-fov_name: moge2
+detector_name: null
+fov_name: null
 iou_threshold: 0.7
 
 # SE(3) alignment settings
